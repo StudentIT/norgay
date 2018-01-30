@@ -1,0 +1,9 @@
+{
+    "stores": {
+        "demo": {
+            "name": "Demo",
+            "host": "demo.cursusdienst.org",
+            "key" : ""
+        }
+    }
+}
