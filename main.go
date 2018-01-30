@@ -94,7 +94,7 @@ func main() {
         for {
             us, err := UpdateStores()
             if err != nil {
-                log.Println(err)
+                log.Printf("[norgay] %s\n", err)
             }
 
             s = us
