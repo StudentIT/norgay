@@ -5,6 +5,8 @@ import (
     "io/ioutil"
     "log"
     "net/http"
+    "os"
+    "path/filepath"
     "time"
 
     "github.com/gin-gonic/gin"
@@ -81,6 +83,12 @@ func main() {
         panic(err)
     }
 
+    e, err := os.Executable()
+    if err != nil {
+        panic(err)
+    }
+    d := filepath.Dir(e)
+
     var s []Store
     go func() {
         for {
@@ -96,8 +104,8 @@ func main() {
         }
     }()
 
-	r := gin.Default()
-    r.LoadHTMLFiles("templates/index.tmpl")
+    r := gin.Default()
+    r.LoadHTMLFiles(d + "/templates/index.tmpl")
 
 	r.GET("/", func(c *gin.Context) {
         c.HTML(http.StatusOK, "index.tmpl", gin.H{
