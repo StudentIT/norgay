@@ -24,10 +24,10 @@ type CurrentSession struct {
 type Store struct {
 	Name   map[string]string
 	Host   string
-	Status string
+	Online bool
+	Status bool
 }
-
-func (s *Store) GetStatus(key string) error {
+func (s *Store) Update(key string) error {
 	req, err := http.NewRequest("GET", "https://"+s.Host+"/api/cudi/currentSession", nil)
 	if err != nil {
 		return err
@@ -37,13 +37,17 @@ func (s *Store) GetStatus(key string) error {
 	q.Add("key", key)
 	req.URL.RawQuery = q.Encode()
 
-	c := http.Client{}
+	c := http.Client{
+		Timeout: 5 * time.Second,
+	}
 
 	res, err := c.Do(req)
 	if err != nil {
-		return err
+		return nil
 	}
 	defer res.Body.Close()
+
+	s.Online = true
 
 	b, err := ioutil.ReadAll(res.Body)
 	if err != nil {
@@ -54,7 +58,7 @@ func (s *Store) GetStatus(key string) error {
 	if err := json.Unmarshal(b, &cs); err != nil {
 		return err
 	}
-	s.Status = cs.Status
+	s.Status = (cs.Status == "open")
 
 	return nil
 }
@@ -69,8 +73,8 @@ func UpdateStores() ([]Store, error) {
 			l[k] = v.(string)
 		}
 
-		store := Store{l, s["host"].(string), ""}
-		if err := store.GetStatus(s["key"].(string)); err != nil {
+		store := Store{l, s["host"].(string), false, false}
+		if err := store.Update(s["key"].(string)); err != nil {
 			return nil, err
 		}
 

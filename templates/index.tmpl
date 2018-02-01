@@ -71,32 +71,33 @@
             font-size: 12pt;
         }
 
-        .store .status {
+        .store .online {
             display: flex;
+            margin-right: 16px;
             align-items: center;
         }
 
-        .status svg {
+        .online svg {
             width: 33px;
         }
 
-        .status .path {
-          stroke-dasharray: 1000;
-          stroke-dashoffset: 0;
+        .online .path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 0;
         }
 
-        .status .path.circle {
+        .online .path.circle {
             -webkit-animation: dash .9s ease-in-out;
             animation: dash .9s ease-in-out;
         }
 
-        .status .path.check {
+        .online .path.check {
             stroke-dashoffset: -100;
             -webkit-animation: dash-check .9s .35s ease-in-out forwards;
             animation: dash-check .9s .35s ease-in-out forwards;
         }
 
-        .status .path.line {
+        .online .path.line {
             stroke-dashoffset: 1000;
             -webkit-animation: dash .9s .35s ease-in-out forwards;
             animation: dash .9s .35s ease-in-out forwards;
@@ -121,6 +122,15 @@
             0% { stroke-dashoffset: -100; }
             100% { stroke-dashoffset: 900; }
         }
+
+        .store .status {
+            display: flex;
+            align-items: center;
+        }
+
+        .status svg {
+            width: 33px;
+        }
     </style>
 </head>
 
@@ -140,8 +150,8 @@
                             <p>{{ index .Name $.Language }}</p>
                             <a href="https://{{ .Host }}">{{ .Host }}</a>
                         </div>
-                        <div class="status">
-                            {{ if eq .Status "open" }}
+                        <div class="online">
+                            {{ if .Online }}
                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
                                     <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
                                     <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
@@ -151,6 +161,19 @@
                                     <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
                                     <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3"/>
                                     <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>
+                                </svg>
+                            {{ end }}
+                        </div>
+                        <div class="status">
+                            {{ if .Status }}
+                                <svg fill="#00b1da" viewBox="0 0 24 24">
+                                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                </svg>
+                            {{ else }}
+                                <svg fill="#999" viewBox="0 0 24 24">
+                                    <path d="M22.73 22.73L2.77 2.77 2 2l-.73-.73L0 2.54l4.39 4.39 2.21 4.66-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h7.46l1.38 1.38c-.5.36-.83.95-.83 1.62 0 1.1.89 2 1.99 2 .67 0 1.26-.33 1.62-.84L21.46 24l1.27-1.27zM7.42 15c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h2.36l2 2H7.42zm8.13-2c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H6.54l9.01 9zM7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2z"/>
+                                    <path d="M0 0h24v24H0z" fill="none"/>
                                 </svg>
                             {{ end }}
                         </div>
