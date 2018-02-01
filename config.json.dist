@@ -1,9 +1,16 @@
 {
-    "stores": {
-        "demo": {
-            "name": "Demo",
+    "title" : {
+        "en-us": "Student IT - Bookstores",
+        "nl-be": "Student IT - Cursusdiensten"
+    },
+    "stores": [
+        {
+            "name": {
+                "en-us": "Demo",
+                "nl-be": "Demo"
+            },
             "host": "demo.cursusdienst.org",
             "key" : ""
         }
-    }
+    ]
 }

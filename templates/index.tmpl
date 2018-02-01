@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Student IT - Cursusdienst</title>
+    <title>{{ index .Title .Language }}</title>
 
     <style>
         @import url(https://fonts.googleapis.com/css?family=Sintony);
@@ -39,8 +39,8 @@
         }
 
         .content #line {
-            border: 2px solid #333;
-            border-radius: 2px;
+            border: 1px solid #999;
+            border-radius: 1px;
         }
 
         #stores {
@@ -66,7 +66,7 @@
         }
 
         .store .info a {
-            color: #999999;
+            color: #999;
             text-decoration: none;
             font-size: 12pt;
         }
@@ -92,32 +92,32 @@
 
         .status .path.check {
             stroke-dashoffset: -100;
-            -webkit-animation: check .9s .35s ease-in-out forwards;
-            animation: check .9s .35s ease-in-out forwards;
+            -webkit-animation: dash-check .9s .35s ease-in-out forwards;
+            animation: dash-check .9s .35s ease-in-out forwards;
         }
 
         .status .path.line {
             stroke-dashoffset: 1000;
-            -webkit-animation: line .9s .35s ease-in-out forwards;
-            animation: line .9s .35s ease-in-out forwards;
+            -webkit-animation: dash .9s .35s ease-in-out forwards;
+            animation: dash .9s .35s ease-in-out forwards;
         }
 
-        @-webkit-keyframes line {
+        @-webkit-keyframes dash {
             0% { stroke-dashoffset: 1000; }
             100% { stroke-dashoffset: 0; }
         }
 
-        @keyframes line {
+        @keyframes dash {
             0% { stroke-dashoffset: 1000; }
             100% { stroke-dashoffset: 0; }
         }
 
-        @-webkit-keyframes check {
+        @-webkit-keyframes dash-check {
             0% { stroke-dashoffset: -100; }
             100% { stroke-dashoffset: 900; }
         }
 
-        @keyframes check {
+        @keyframes dash-check {
             0% { stroke-dashoffset: -100; }
             100% { stroke-dashoffset: 900; }
         }
@@ -137,7 +137,7 @@
                 {{ range .Stores }}
                     <div class="store">
                         <div class="info">
-                            <p>{{ .Name }}</p>
+                            <p>{{ index .Name $.Language }}</p>
                             <a href="https://{{ .Host }}">{{ .Host }}</a>
                         </div>
                         <div class="status">
