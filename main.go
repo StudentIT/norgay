@@ -1,12 +1,15 @@
+// go:generate go-assets-builder -s /assets -o assets.go assets/
+
 package main
 
 import (
 	"encoding/json"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -84,6 +87,27 @@ func UpdateStores() ([]Store, error) {
 	return stores, nil
 }
 
+func loadTemplate() (*template.Template, error) {
+	t := template.New("")
+	for n, f := range Assets.Files {
+		if f.IsDir() || !strings.HasSuffix(n, ".tmpl") {
+			continue
+		}
+
+		d, err := ioutil.ReadAll(f)
+		if err != nil {
+			return nil, err
+		}
+
+		t, err = t.New(n).Parse(string(d))
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return t, nil
+}
+
 func main() {
 	viper.SetConfigName("config")
 	viper.AddConfigPath("$HOME/.config/norgay")
@@ -92,12 +116,6 @@ func main() {
 	if err := viper.ReadInConfig(); err != nil {
 		panic(err)
 	}
-
-	e, err := os.Executable()
-	if err != nil {
-		panic(err)
-	}
-	d := filepath.Dir(e)
 
 	var s []Store
 	go func() {
@@ -115,7 +133,11 @@ func main() {
 	}()
 
 	r := gin.Default()
-	r.LoadHTMLFiles(d + "/templates/index.tmpl")
+	t, err := loadTemplate()
+	if err != nil {
+		panic(err)
+	}
+	r.SetHTMLTemplate(t)
 
 	r.GET("/", func(c *gin.Context) {
 		l := c.GetHeader("Accept-Language")
@@ -123,11 +145,28 @@ func main() {
 			l = "en-us"
 		}
 
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+		c.HTML(http.StatusOK, "/html/index.tmpl", gin.H{
 			"Language": l,
 			"Title":    viper.GetStringMapString("title"),
 			"Stores":   s,
 		})
+	})
+	r.GET("/static/*filepath", func(c *gin.Context) {
+		f, err := Assets.Open("/static/" + c.Param("filepath"))
+		if err != nil {
+			if os.IsNotExist(err) {
+				c.AbortWithStatus(http.StatusNotFound)
+			}
+
+			c.AbortWithStatus(http.StatusInternalServerError)
+		}
+
+		d, err := ioutil.ReadAll(f)
+		if err != nil {
+			c.AbortWithStatus(http.StatusInternalServerError)
+		}
+
+		c.Writer.Write(d)
 	})
 
 	r.Run()
