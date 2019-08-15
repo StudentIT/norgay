@@ -4,16 +4,21 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
+	"runtime"
+	"runtime/debug"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"github.com/studentit/norgay/log"
+
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 const (
@@ -31,7 +36,7 @@ type Store struct {
 	Status bool
 }
 func (s *Store) Update(key string) error {
-	req, err := http.NewRequest("GET", "https://"+s.Host+"/api/cudi/currentSession", nil)
+	req, err := http.NewRequest("GET", "https://" + s.Host + "/api/cudi/currentSession", nil)
 	if err != nil {
 		return err
 	}
@@ -87,6 +92,15 @@ func UpdateStores() ([]Store, error) {
 	return stores, nil
 }
 
+func getBuildInfo() debug.Module {
+	bi, ok := debug.ReadBuildInfo()
+	if ok {
+		return bi.Main
+	}
+
+	return debug.Module{Version: "unknown"}
+}
+
 func loadTemplate() (*template.Template, error) {
 	t := template.New("")
 	for n, f := range Assets.Files {
@@ -109,12 +123,25 @@ func loadTemplate() (*template.Template, error) {
 }
 
 func main() {
+	kingpin.Version(
+		fmt.Sprintf(
+			"%s %s compiled with %v on %v/%v",
+			kingpin.CommandLine.Name,
+			getBuildInfo().Version,
+			runtime.Version(),
+			runtime.GOOS,
+			runtime.GOARCH,
+		),
+	)
+	kingpin.HelpFlag.Short('h')
+	kingpin.Parse()
+
 	viper.SetConfigName("config")
 	viper.AddConfigPath("$HOME/.config/norgay")
 	viper.AddConfigPath(".")
 
 	if err := viper.ReadInConfig(); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	var s []Store
@@ -122,11 +149,11 @@ func main() {
 		for {
 			us, err := UpdateStores()
 			if err != nil {
-				log.Printf("[norgay] %s\n", err)
+				log.Warn(err)
 			}
 
 			s = us
-			log.Println("[norgay] updated stores")
+			log.Info("updated stores")
 
 			time.Sleep(UpdatePeriod)
 		}
@@ -135,7 +162,7 @@ func main() {
 	r := gin.Default()
 	t, err := loadTemplate()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	r.SetHTMLTemplate(t)
 
