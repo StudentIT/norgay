@@ -16,11 +16,9 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/onsi/gomega v1.15.0 // indirect
 	github.com/sirupsen/logrus v1.8.1
-	github.com/spf13/cast v1.4.0 // indirect
-	github.com/spf13/viper v1.8.1
+	github.com/spf13/viper v1.9.0
 	github.com/ugorji/go v1.2.6 // indirect
 	github.com/x-cray/logrus-prefixed-formatter v0.5.2
 	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b // indirect
-	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 )
