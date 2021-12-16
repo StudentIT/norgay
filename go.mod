@@ -12,7 +12,7 @@ require (
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/onsi/gomega v1.15.0 // indirect
 	github.com/sirupsen/logrus v1.8.1
-	github.com/spf13/viper v1.10.0
+	github.com/spf13/viper v1.10.1
 	github.com/ugorji/go v1.2.6 // indirect
 	github.com/x-cray/logrus-prefixed-formatter v0.5.2
 	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b // indirect
