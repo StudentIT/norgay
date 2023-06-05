@@ -10,7 +10,7 @@ require (
 	github.com/jessevdk/go-flags v1.5.0 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/onsi/gomega v1.15.0 // indirect
-	github.com/sirupsen/logrus v1.9.2
+	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.16.0
 	github.com/x-cray/logrus-prefixed-formatter v0.5.2
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
